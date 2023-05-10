@@ -3,7 +3,9 @@ from keras.models import load_model
 
 app = FastAPI()
 
-model = load_model('model/Conv-LSTM.h5')
+model = load_model('model/Conv-LSTM.h5', compile=False)
+
+model.compile()
 
 print(model.summary())
 @app.get("/")
