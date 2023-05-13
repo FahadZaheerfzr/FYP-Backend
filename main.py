@@ -22,7 +22,7 @@ def to_onehot(yy):
 @app.get("/")
 def classify():
     mods = [b'8PSK', b'AM-DSB', b'BPSK', b'CPFSK', b'GFSK', b'PAM4', b'QAM16', b'QAM64', b'QPSK', b'WBFM']
-    file = open("/singleton_final.dat",'rb')
+    file = open("singleton_final.dat",'rb')
     Xd = pickle.load(file)
     new_data = np.array(Xd)
     new_data = new_data[np.newaxis,...]
