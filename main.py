@@ -41,7 +41,8 @@ async def predict_file(file: UploadFile = File(...)):
     if not file.filename.endswith('.dat'):
         raise HTTPException(status_code=400, detail="File must be in .dat format")
     # Load the file into memory
-    Xd = pickle.load(file)
+    content = await file.read()
+    Xd = pickle.load(content)
     new_data = np.array(Xd)
     new_data = new_data[np.newaxis,...]
     new_data.shape
