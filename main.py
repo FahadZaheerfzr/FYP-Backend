@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, Form, File, UploadFile, HTTPException
 from keras.models import load_model
 import pickle
 import numpy as np
@@ -35,7 +35,7 @@ def classify():
     return {"modulation:type":mods[idx]}
 
 @app.post("/predict_file/")
-async def predict_file(file: UploadFile):
+async def predict_file(file: UploadFile = File(...)):
     # Check if the uploaded file is a .dat file
     if not file.filename.endswith('.dat'):
         raise HTTPException(status_code=400, detail="File must be in .dat format")
