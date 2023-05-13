@@ -10,7 +10,6 @@ model = load_model('model/Conv-LSTM.h5', compile=False)
 model.compile()
 
 print(model.summary())
-@app.get("/")
 
 
 
@@ -20,7 +19,7 @@ def to_onehot(yy):
       result.append(round(num))
     return result
 
-
+@app.get("/")
 def classify():
     mods = [b'8PSK', b'AM-DSB', b'BPSK', b'CPFSK', b'GFSK', b'PAM4', b'QAM16', b'QAM64', b'QPSK', b'WBFM']
     file = open("/singleton_final.dat",'rb')
