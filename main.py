@@ -36,23 +36,16 @@ def classify():
 
 @app.post("/predict_file/")
 async def predict_file(file: UploadFile = File(...)):
+    mods = [b'8PSK', b'AM-DSB', b'BPSK', b'CPFSK', b'GFSK', b'PAM4', b'QAM16', b'QAM64', b'QPSK', b'WBFM']
     # Check if the uploaded file is a .dat file
     if not file.filename.endswith('.dat'):
         raise HTTPException(status_code=400, detail="File must be in .dat format")
     # Load the file into memory
-    contents = await file.read()
-    # Convert the file contents into a numpy array
-    data = np.frombuffer(contents, dtype=np.float32)
-    # Reshape the data to match the input shape of your model
-    data = data.reshape((1, -1, 1))
-    # Make the prediction using the loaded model
-    result = model.predict(data)
-    # Convert the prediction to a one-hot encoded format
+    Xd = pickle.load(file)
+    new_data = np.array(Xd)
+    new_data = new_data[np.newaxis,...]
+    new_data.shape
+    result = model.predict(new_data)
     final_result = to_onehot(result[0])
-    # Get the index of the predicted class
     idx = final_result.index(1)
-    # Get the name of the predicted class from the mods list
-    mods = [b'8PSK', b'AM-DSB', b'BPSK', b'CPFSK', b'GFSK', b'PAM4', b'QAM16', b'QAM64', b'QPSK', b'WBFM']
-    prediction = mods[idx]
-    # Return the predicted class as the response
-    return json.loads(json.dumps({"prediction": prediction}, cls=NumpyEncoder))
+    return {"modulation:type":mods[idx]}
