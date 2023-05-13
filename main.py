@@ -2,6 +2,13 @@ from fastapi import FastAPI, File, UploadFile, HTTPException
 from keras.models import load_model
 import pickle
 import numpy as np
+import json
+
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
 
 app = FastAPI()
 
@@ -48,4 +55,4 @@ async def predict_file(file: UploadFile):
     mods = [b'8PSK', b'AM-DSB', b'BPSK', b'CPFSK', b'GFSK', b'PAM4', b'QAM16', b'QAM64', b'QPSK', b'WBFM']
     prediction = mods[idx]
     # Return the predicted class as the response
-    return {"prediction": prediction}
+    return json.loads(json.dumps({"prediction": prediction}, cls=NumpyEncoder))
