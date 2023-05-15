@@ -1,25 +1,30 @@
-from fastapi import FastAPI, Form, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from keras.models import load_model
 import pickle
 import numpy as np
-import json
-
-class NumpyEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, np.ndarray):
-            return obj.tolist()
-        return json.JSONEncoder.default(self, obj)
 
 app = FastAPI()
 
 model = load_model('model/Conv-LSTM.h5', compile=False)
 model.compile()
 
-def to_onehot(yy):
-    result = []
-    for num in yy:
-        result.append(round(num))
-    return result
+
+def process_array(arr):
+    # Find the maximum value in the array
+    max_value = max(map(max, arr))
+
+    # Iterate over each element in the array
+    processed_arr = []
+    for row in arr:
+        new_row = []
+        for num in row:
+            if num == max_value:
+                new_row.append(1)
+            else:
+                new_row.append(0)
+        processed_arr.append(new_row)
+
+    return processed_arr
 
 @app.get("/")
 def classify():
@@ -45,9 +50,7 @@ async def predict_file(file: UploadFile = File(...)):
 
     Xd = pickle.load(file.file)
     new_data = np.array(Xd)
-    new_data = new_data[np.newaxis,...]
-    new_data.shape
     result = model.predict(new_data)
-    final_result = to_onehot(result[0])
+    final_result = process_array(result[0])
     idx = final_result.index(1)
     return {"modulation:type":mods[idx]}
