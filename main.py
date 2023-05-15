@@ -32,10 +32,8 @@ def classify():
     file = open("singleton_final.dat",'rb')
     Xd = pickle.load(file)
     new_data = np.array(Xd)
-    new_data = new_data[np.newaxis,...]
-    new_data.shape
     result = model.predict(new_data)
-    final_result = to_onehot(result[0])
+    final_result = process_array(result[0])
     idx = final_result.index(1)
     return {"modulation:type":mods[idx]}
 
@@ -51,6 +49,7 @@ async def predict_file(file: UploadFile = File(...)):
     Xd = pickle.load(file.file)
     new_data = np.array(Xd)
     result = model.predict(new_data)
-    final_result = process_array(result[0])
+    print(result)
+    final_result = process_array(result)
     idx = final_result.index(1)
     return {"modulation:type":mods[idx]}
