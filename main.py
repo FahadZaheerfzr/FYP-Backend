@@ -51,5 +51,6 @@ async def predict_file(file: UploadFile = File(...)):
     result = model.predict(new_data)
     print(result)
     final_result = process_array(result)
+    print(final_result)
     idx = final_result.index(1)
     return {"modulation:type":mods[idx]}
