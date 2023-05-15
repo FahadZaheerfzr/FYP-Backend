@@ -52,5 +52,5 @@ async def predict_file(file: UploadFile = File(...)):
     print(result)
     final_result = process_array(result)
     print(final_result)
-    idx = final_result.index(1)
+    idx = final_result[0].index(1)
     return {"modulation:type":mods[idx]}
