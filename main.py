@@ -1,9 +1,18 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from keras.models import load_model
+from fastapi.middleware.cors import CORSMiddleware
 import pickle
 import numpy as np
 
 app = FastAPI()
+
+app.add_middleware(
+   CORSMiddleware,
+    allow_origins = ["http://127.0.0.1:3000", "http://localhost:3000"],
+    allow_credentials =True,
+    allow_methods = ["*"],
+    allow_headers= ["*"],   
+)
 
 model = load_model('model/Conv-LSTM.h5', compile=False)
 model.compile()
