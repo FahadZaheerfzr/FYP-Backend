@@ -38,12 +38,13 @@ def process_array(arr):
 @app.get("/")
 def classify():
     mods = [b'8PSK', b'AM-DSB', b'BPSK', b'CPFSK', b'GFSK', b'PAM4', b'QAM16', b'QAM64', b'QPSK', b'WBFM']
-    file = open("singleton_final.dat",'rb')
-    Xd = pickle.load(file)
+    Xd = pickle.load("/test_files/test_1.dat")
     new_data = np.array(Xd)
     result = model.predict(new_data)
-    final_result = process_array(result[0])
-    idx = final_result.index(1)
+    print(result)
+    final_result = process_array(result)
+    print(final_result)
+    idx = final_result[0].index(1)
     return {"modulation:type":mods[idx]}
 
 @app.post("/predict_file/")
